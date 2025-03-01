@@ -1,5 +1,6 @@
 package com.example.praktika;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,34 +10,28 @@ import java.util.List;
 
 public class TaskService {
 
-    private List<Task> tasks = new ArrayList<>();
+    @Autowired
+    private TaskRepository taskRepository;
 
     public Task createTask(Task task) {
-        tasks.add(task);
-        return task;
+        return taskRepository.save(task);
     }
 
     public List<Task> getTasks() {
-        return tasks;
+        return taskRepository.findAll();
     }
 
     public Task updateTask(int id, Task.Status status) {
-        for (Task task : tasks ) {
-            if (task.getId() == id) {
-                task.setStatus(status);
-                return task;
-            }
-        }
-        return null;
+        return taskRepository.findById(id).map(task -> {
+            task.setStatus(status);
+            return taskRepository.save(task);
+        }).orElse(null);
     }
 
     public Task deleteTask(int id) {
-        for (Task task : tasks) {
-            if (task.getId() == id) {
-                tasks.remove(task);
-                return task;
-            }
-        }
-        return null;
+        return taskRepository.findById(id).map(task -> {
+            taskRepository.delete(task);
+            return task;
+        }).orElse(null);
     }
 }

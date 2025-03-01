@@ -1,14 +1,23 @@
 package com.example.praktika;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
+
+@Entity
 
 public class Task {
     public enum Status {
         Done,
         Not_Done
     }
-    private static int idCounter = 0;
-    private final int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String name;
     private String description;
     private LocalDateTime creationDate;
@@ -17,7 +26,6 @@ public class Task {
 
     public Task(){
         this.creationDate = LocalDateTime.now();
-        this.id = ++idCounter;
         this.status = Status.Not_Done;
     }
 
